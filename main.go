@@ -6,17 +6,24 @@ import (
 	"os"
 )
 
-// Для примера разбора wsdl и xsd
-// https://github.com/fiorix/wsdl2go/blob/master/wsdl/types.go
+type Description struct {
+	Schema     Schema
+	Definition Definitions
+}
+
+var Descriptions []Description
 
 func main() {
-	xsdFile := "./wsdl-xsd/hcs-rvuo-types.xsd"
+	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
 	xsdData := getFileData(xsdFile)
 	xsdSchema := getSchema(xsdData)
 
-	wsdlFile := "./wsdl-xsd/hcs-rvuo-service-async.wsdl"
+	wsdlFile := "./wsdl-xsd/hcs-appeals-service-async.wsdl"
 	wsdlData := getFileData(wsdlFile)
 	wsdlDef := getDefinition(wsdlData)
+
+	Descriptions = append(Descriptions, Description{xsdSchema, wsdlDef})
+
 	fmt.Println(xsdSchema, wsdlDef)
 }
 

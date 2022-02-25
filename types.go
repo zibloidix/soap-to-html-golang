@@ -1,3 +1,6 @@
+// Для примера разбора wsdl и xsd
+// https://github.com/fiorix/wsdl2go/blob/master/wsdl/types.go
+
 package main
 
 import "encoding/xml"
