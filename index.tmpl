@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>{{.Title}}</h1>
+    <h2>Версия системы: {{.Version}}</h2>
+    <hr>
+    <h2>Содержание:</h2>
+    <ul>
+        {{range .Descriptions}}
+            <li>{{.Definition.Service.Name}}</li>
+            <li>
+                <ul>
+                    {{range .Definition.Binding.Operations}}
+                    <li>{{.Name}}</li>
+                    {{end}}
+                </ul>
+            </li>
+        {{end}}
+    </ul>
+    <hr>
+    <h2>Сервисы:</h2>
+    {{range .Descriptions}}
+        <h3>Веб-сервис "{{.Definition.Service.Name}}"</h3>
+        <h4>Описание</h4>
+        <p>{{.Definition.Service.Doc}}</p>
+        <h3>Методы веб-сервиса: "{{.Definition.Service.Name}}"</h3>
+        <h5>Список методов</h5>
+        <table cellspacing="0" class="reference">
+            <colgroup><col width="35%">
+            <col width="65%">
+            </colgroup><thead>
+              <tr>
+                <th>Наименование</th>
+                <th>Описание</th>
+              </tr>
+            </thead>
+            <tbody>
+                {{range .Definition.PortType.Operations}}
+                <tr>
+                    <td><a href="#">{{.Name}}</a>&nbsp;</td>
+                    <td style="text-align: ">{{.Doc}}<br></td>
+                </tr>
+                {{end}}
+            </tbody>
+          </table>
+    {{end}}
+    
+</body>
+</html>

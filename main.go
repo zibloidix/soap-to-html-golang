@@ -14,6 +14,13 @@ type Description struct {
 var Descriptions []Description
 
 func main() {
+	builder := Builder{
+		Title:        "Test title",
+		Version:      "13.1.9.2",
+		OutputFile:   "./index.html",
+		TemplateFile: "./index.tmpl",
+	}
+
 	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
 	xsdData := getFileData(xsdFile)
 	xsdSchema := getSchema(xsdData)
@@ -23,8 +30,10 @@ func main() {
 	wsdlDef := getDefinition(wsdlData)
 
 	Descriptions = append(Descriptions, Description{xsdSchema, wsdlDef})
+	builder.Descriptions = Descriptions
 
 	fmt.Println(xsdSchema, wsdlDef)
+	builder.run()
 }
 
 func getFileData(fileName string) []byte {
