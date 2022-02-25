@@ -38,6 +38,7 @@ func (def Definitions) UnmarshalXML(d xml.Decoder, start xml.StartElement) error
 
 // Service defines a WSDL service and with a location, like an HTTP server.
 type Service struct {
+	Name  string `xml:"name,attr"`
 	Doc   string `xml:"documentation"`
 	Ports []Port `xml:"port"`
 }
