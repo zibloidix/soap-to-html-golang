@@ -6,8 +6,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
+
+const BASE_PATH = "/home/aleksey/Coding/SOAP/li"
 
 type Description struct {
 	Schema     Schema
@@ -24,7 +25,7 @@ func main() {
 		TemplateFile: "./index.tmpl",
 	}
 
-	files := getWsdlXsdFiles("/home/aleksey/Coding/SOAP/li")
+	files := getWsdlXsdFiles(BASE_PATH)
 	fmt.Println(files)
 	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
 	xsdData := getFileData(xsdFile)
@@ -74,7 +75,7 @@ func getWsdlXsdFiles(path string) []string {
 			if err != nil {
 				panic(err)
 			}
-			if !info.IsDir() && (isWSDL(info.Name()) || isXSD(info.Name())) {
+			if isValidFile(path, info) {
 				files = append(files, path)
 			}
 			return nil
@@ -83,12 +84,4 @@ func getWsdlXsdFiles(path string) []string {
 		log.Println(err)
 	}
 	return files
-}
-
-func isWSDL(fileName string) bool {
-	return strings.Contains(fileName, ".wsdl") || strings.Contains(fileName, ".xsd")
-}
-
-func isXSD(fileName string) bool {
-	return strings.Contains(fileName, ".wsdl") || strings.Contains(fileName, ".xsd")
 }
