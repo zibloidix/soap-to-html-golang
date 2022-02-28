@@ -3,7 +3,10 @@ package main
 import (
 	"encoding/xml"
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
+	"strings"
 )
 
 type Description struct {
@@ -21,6 +24,8 @@ func main() {
 		TemplateFile: "./index.tmpl",
 	}
 
+	files := getWsdlXsdFiles("/home/aleksey/Coding/SOAP/li")
+	fmt.Println(files)
 	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
 	xsdData := getFileData(xsdFile)
 	xsdSchema := getSchema(xsdData)
@@ -60,4 +65,30 @@ func getDefinition(data []byte) Definitions {
 		panic(err)
 	}
 	return def
+}
+
+func getWsdlXsdFiles(path string) []string {
+	files := []string{}
+	err := filepath.Walk(path,
+		func(path string, info os.FileInfo, err error) error {
+			if err != nil {
+				panic(err)
+			}
+			if !info.IsDir() && (isWSDL(info.Name()) || isXSD(info.Name())) {
+				files = append(files, path)
+			}
+			return nil
+		})
+	if err != nil {
+		log.Println(err)
+	}
+	return files
+}
+
+func isWSDL(fileName string) bool {
+	return strings.Contains(fileName, ".wsdl") || strings.Contains(fileName, ".xsd")
+}
+
+func isXSD(fileName string) bool {
+	return strings.Contains(fileName, ".wsdl") || strings.Contains(fileName, ".xsd")
 }
