@@ -2,13 +2,12 @@ package main
 
 import (
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 )
-
-const BASE_PATH = "/home/aleksey/Coding/SOAP/li"
 
 type Description struct {
 	Schema     Schema
@@ -18,11 +17,16 @@ type Description struct {
 var Descriptions []Description
 
 func main() {
-	builderData := getFileData("./builder-conf.xml")
+	builderConf := flag.String("builder-conf", "./builder-conf.xml", "Файл с настроками для сборщика документации")
+	wsdlXsdPath := flag.String("wsdl-xsd-path", ".", "Путь до директории, которая содержит wsdl и xsd файлы")
+	flag.Parse()
+
+	builderData := getFileData(*builderConf)
 	builder := getBuilder(builderData)
 
-	files := getWsdlXsdFiles(BASE_PATH)
+	files := getWsdlXsdFiles(*wsdlXsdPath)
 	fmt.Println(files)
+
 	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
 	xsdData := getFileData(xsdFile)
 	xsdSchema := getSchema(xsdData)
@@ -36,6 +40,7 @@ func main() {
 
 	fmt.Println(xsdSchema, wsdlDef)
 	builder.run()
+
 }
 
 func getFileData(fileName string) []byte {
