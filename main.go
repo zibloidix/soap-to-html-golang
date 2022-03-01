@@ -18,12 +18,8 @@ type Description struct {
 var Descriptions []Description
 
 func main() {
-	builder := Builder{
-		Title:        "Test title",
-		Version:      "13.1.9.2",
-		OutputFile:   "./index.html",
-		TemplateFile: "./index.tmpl",
-	}
+	builderData := getFileData("./builder-conf.xml")
+	builder := getBuilder(builderData)
 
 	files := getWsdlXsdFiles(BASE_PATH)
 	fmt.Println(files)
@@ -66,6 +62,15 @@ func getDefinition(data []byte) Definitions {
 		panic(err)
 	}
 	return def
+}
+
+func getBuilder(data []byte) Builder {
+	var builder Builder
+	err := xml.Unmarshal(data, &builder)
+	if err != nil {
+		panic(err)
+	}
+	return builder
 }
 
 func getWsdlXsdFiles(path string) []string {
