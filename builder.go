@@ -11,7 +11,7 @@ type Builder struct {
 	Version      string
 	OutputFile   string
 	TemplateFile string
-	Descriptions []Description
+	Services     map[string]ServiceDescription
 }
 
 func (r *Builder) run() {

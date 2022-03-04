@@ -6,19 +6,19 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 )
 
-type Description struct {
-	Schema     Schema
-	Definition Definitions
+type ServiceDescription struct {
+	Schemas     []Schema
+	Definitions []Definitions
 }
-
-var Descriptions []Description
 
 func main() {
 	builderConf := flag.String("builder-conf", "./builder-conf.xml", "Файл с настроками для сборщика документации")
-	wsdlXsdPath := flag.String("wsdl-xsd-path", ".", "Путь до директории, которая содержит wsdl и xsd файлы")
+	wsdlXsdPath := flag.String("wsdl-xsd-path", "/home/aleksey/Coding/SOAP/li", "Путь до директории, которая содержит wsdl и xsd файлы")
 	flag.Parse()
 
 	builderData := getFileData(*builderConf)
@@ -27,20 +27,34 @@ func main() {
 	files := getWsdlXsdFiles(*wsdlXsdPath)
 	fmt.Println(files)
 
-	xsdFile := "./wsdl-xsd/hcs-appeals-types.xsd"
-	xsdData := getFileData(xsdFile)
-	xsdSchema := getSchema(xsdData)
-
-	wsdlFile := "./wsdl-xsd/hcs-appeals-service-async.wsdl"
-	wsdlData := getFileData(wsdlFile)
-	wsdlDef := getDefinition(wsdlData)
-
-	Descriptions = append(Descriptions, Description{xsdSchema, wsdlDef})
-	builder.Descriptions = Descriptions
-
-	fmt.Println(xsdSchema, wsdlDef)
+	builder.Services = getServices(files)
+	fmt.Println(builder)
 	builder.run()
 
+}
+
+func getServices(files []string) map[string]ServiceDescription {
+	services := map[string]ServiceDescription{}
+	for _, file := range files {
+		dir := path.Dir(file)
+		if _, ok := services[dir]; !ok {
+			services[dir] = ServiceDescription{}
+		}
+		fileData := getFileData(file)
+		service := services[dir]
+		if strings.Contains(file, ".wsdl") {
+			wsdlDef := getDefinition(fileData)
+			service.Definitions = append(service.Definitions, wsdlDef)
+		}
+		if strings.Contains(file, ".xsd") {
+			xsdSchema := getSchema(fileData)
+			service.Schemas = append(service.Schemas, xsdSchema)
+		}
+		services[dir] = service
+
+		fmt.Println(services)
+	}
+	return services
 }
 
 func getFileData(fileName string) []byte {
