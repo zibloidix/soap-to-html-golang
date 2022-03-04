@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Builder>
-    <Title>Test title from XML</Title>
+    <Title>HTML документация SOAP сервисов</Title>
     <Version>13.1.9.2</Version>
     <OutputFile>./index.html</OutputFile>
     <TemplateFile>./index.tmpl</TemplateFile>

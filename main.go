@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/xml"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"path"
@@ -18,17 +17,15 @@ type ServiceDescription struct {
 
 func main() {
 	builderConf := flag.String("builder-conf", "./builder-conf.xml", "Файл с настроками для сборщика документации")
-	wsdlXsdPath := flag.String("wsdl-xsd-path", "/home/aleksey/Coding/SOAP/li", "Путь до директории, которая содержит wsdl и xsd файлы")
+	wsdlXsdPath := flag.String("wsdl-xsd-path", ".", "Путь до директории, которая содержит wsdl и xsd файлы")
 	flag.Parse()
 
 	builderData := getFileData(*builderConf)
 	builder := getBuilder(builderData)
 
 	files := getWsdlXsdFiles(*wsdlXsdPath)
-	fmt.Println(files)
 
 	builder.Services = getServices(files)
-	fmt.Println(builder)
 	builder.run()
 
 }
@@ -51,8 +48,6 @@ func getServices(files []string) map[string]ServiceDescription {
 			service.Schemas = append(service.Schemas, xsdSchema)
 		}
 		services[dir] = service
-
-		fmt.Println(services)
 	}
 	return services
 }
